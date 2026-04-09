@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GGInd Cloud</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+[data-theme="dark"]{--bg:#0d1117;--bg2:#161b22;--bg3:#1c2128;--bg4:#21262d;--b:#21262d;--b2:#30363d;--acc:#3fb950;--acc2:#2ea043;--accd:rgba(63,185,80,.12);--accd2:rgba(63,185,80,.06);--tx:#e6edf3;--tx2:#8b949e;--tx3:#484f58;--red:#f85149;--redd:rgba(248,81,73,.12);--yel:#e3b341;--yeld:rgba(227,179,65,.12);--blu:#58a6ff;--blud:rgba(88,166,255,.12);--sha:0 8px 32px rgba(0,0,0,.6)}
+[data-theme="light"]{--bg:#ffffff;--bg2:#f6f8fa;--bg3:#ffffff;--bg4:#f6f8fa;--b:#d0d7de;--b2:#d0d7de;--acc:#1a7f37;--acc2:#116329;--accd:rgba(26,127,55,.1);--accd2:rgba(26,127,55,.05);--tx:#1f2328;--tx2:#636c76;--tx3:#9198a1;--red:#d1242f;--redd:rgba(209,36,47,.1);--yel:#9a6700;--yeld:rgba(154,103,0,.1);--blu:#0969da;--blud:rgba(9,105,218,.1);--sha:0 8px 32px rgba(0,0,0,.1)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--tx);font-family:'Outfit',sans-serif;font-size:14px;line-height:1.5;min-height:100vh}
+a{color:var(--acc);text-decoration:none}a:hover{text-decoration:underline}
+button{cursor:pointer;font-family:'Outfit',sans-serif;border:none;outline:none;transition:all .15s}
+input,textarea,select{background:var(--bg2);border:1px solid var(--b);color:var(--tx);border-radius:6px;padding:8px 12px;font-family:'Outfit',sans-serif;font-size:14px;width:100%;outline:none;transition:border-color .15s,box-shadow .15s}
+input:focus,textarea:focus,select:focus{border-color:var(--acc);box-shadow:0 0 0 3px var(--accd)}
+textarea{resize:vertical}
+svg{display:block;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.hidden{display:none!important}
+.mono{font-family:'JetBrains Mono',monospace}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 15px;border-radius:6px;font-size:13px;font-weight:600;white-space:nowrap;cursor:pointer}
+.btn svg{width:14px;height:14px}
+.btn-sm{padding:5px 11px;font-size:12px}
+.btn-pri{background:var(--acc);color:#0d1117}
+.btn-pri:hover{background:var(--acc2);box-shadow:0 3px 10px rgba(63,185,80,.3)}
+.btn-sec{background:var(--bg3);color:var(--tx);border:1px solid var(--b2)}
+.btn-sec:hover{border-color:var(--acc);color:var(--acc)}
+.btn-ghost{background:transparent;color:var(--tx2)}
+.btn-ghost:hover{background:var(--bg4);color:var(--tx)}
+.btn-danger{background:var(--redd);color:var(--red);border:1px solid rgba(248,81,73,.2)}
+.btn-danger:hover{background:var(--red);color:#fff}
+.btn-star{background:var(--bg4);color:var(--tx2);border:1px solid var(--b2)}
+.btn-star:hover,.btn-star.on{border-color:var(--yel);color:var(--yel);background:var(--yeld)}
+
+/* Nav */
+#nav{background:var(--bg2);border-bottom:1px solid var(--b);height:54px;display:flex;align-items:center;padding:0 20px;gap:12px;position:sticky;top:0;z-index:200}
+.nav-logo{display:flex;align-items:center;gap:8px;text-decoration:none!important}
+.nav-logo-icon{width:28px;height:28px;background:var(--acc);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav-logo-icon svg{width:14px;height:14px;stroke:#0d1117}
+.nav-logo-text{font-size:16px;font-weight:800;color:var(--tx);letter-spacing:-.5px}
+.nav-logo-text em{color:var(--acc);font-style:normal}
+.nav-search{flex:1;max-width:280px;position:relative}
+.nav-search input{height:30px;padding:0 10px 0 32px;font-size:12px;border-radius:5px}
+.nav-search-icon{position:absolute;left:9px;top:50%;transform:translateY(-50%);width:13px;height:13px;color:var(--tx3);pointer-events:none}
+.nav-sp{flex:1}
+.nav-actions{display:flex;align-items:center;gap:8px}
+.nav-icon-btn{width:32px;height:32px;border-radius:6px;background:transparent;display:flex;align-items:center;justify-content:center;color:var(--tx2);border:1px solid transparent}
+.nav-icon-btn:hover{background:var(--bg4);border-color:var(--b);color:var(--tx)}
+.nav-icon-btn svg{width:16px;height:16px}
+.nav-av{width:30px;height:30px;border-radius:50%;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+
+/* Dropdown */
+.dd{position:relative}
+.dd-menu{position:absolute;right:0;top:calc(100% + 5px);background:var(--bg2);border:1px solid var(--b);border-radius:8px;min-width:190px;overflow:hidden;box-shadow:var(--sha);z-index:300;animation:ddIn .12s ease}
+@keyframes ddIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+.dd-head{padding:10px 14px;border-bottom:1px solid var(--b)}
+.dd-head strong{display:block;font-size:13px;color:var(--tx)}
+.dd-head span{font-size:11px;color:var(--tx3);font-family:'JetBrains Mono',monospace}
+.dd-item{display:flex;align-items:center;gap:9px;padding:8px 14px;font-size:13px;color:var(--tx2);cursor:pointer;background:transparent;width:100%;border:none;text-align:left;font-family:'Outfit',sans-serif;transition:.1s}
+.dd-item:hover{background:var(--bg4);color:var(--tx)}
+.dd-item svg{width:14px;height:14px;flex-shrink:0}
+.dd-item.danger{color:var(--red)}
+.dd-sep{height:1px;background:var(--b);margin:3px 0}
+
+/* Page */
+.page{padding:28px 20px;max-width:1060px;margin:0 auto;animation:fadeUp .2s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.page-hd{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:24px}
+.page-hd h1{font-size:20px;font-weight:700;letter-spacing:-.3px}
+.page-hd p{font-size:13px;color:var(--tx2);margin-top:2px}
+
+/* Card */
+.card{background:var(--bg2);border:1px solid var(--b);border-radius:8px;padding:18px}
+
+/* Setup */
+#v-setup{min-height:calc(100vh - 54px);display:flex;align-items:center;justify-content:center;padding:20px}
+.setup-box{background:var(--bg2);border:1px solid var(--b);border-radius:12px;padding:32px;max-width:440px;width:100%}
+.setup-logo{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.setup-logo-icon{width:36px;height:36px;background:var(--acc);border-radius:9px;display:flex;align-items:center;justify-content:center}
+.setup-logo-icon svg{width:18px;height:18px;stroke:#0d1117}
+.setup-box h2{font-size:20px;font-weight:800;margin-bottom:4px}
+.setup-box>.sub{font-size:13px;color:var(--tx2);margin-bottom:24px;line-height:1.6}
+.setup-step{display:flex;gap:10px;padding:10px 12px;background:var(--bg3);border-radius:6px;font-size:12px;color:var(--tx2);margin-bottom:8px;line-height:1.5}
+.setup-step-n{min-width:20px;height:20px;border-radius:50%;background:var(--acc);color:#0d1117;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.fg{margin-bottom:14px}
+.fg label{display:block;font-size:12px;font-weight:600;color:var(--tx2);margin-bottom:5px}
+.fg .hint{font-size:11px;color:var(--tx3);margin-top:3px;display:block}
+
+/* Auth */
+#v-auth{min-height:calc(100vh - 54px);display:flex;align-items:center;justify-content:center;padding:20px}
+.auth-box{background:var(--bg2);border:1px solid var(--b);border-radius:12px;padding:32px;max-width:390px;width:100%}
+.auth-hd{text-align:center;margin-bottom:24px}
+.auth-hd .logo-wrap{width:44px;height:44px;background:var(--acc);border-radius:11px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+.auth-hd .logo-wrap svg{width:22px;height:22px;stroke:#0d1117}
+.auth-hd h2{font-size:19px;font-weight:800}
+.auth-hd p{font-size:12px;color:var(--tx2);margin-top:3px}
+.tabs{display:flex;background:var(--bg3);border-radius:6px;padding:3px;margin-bottom:22px}
+.tab{flex:1;padding:7px;text-align:center;font-size:13px;font-weight:600;color:var(--tx3);border-radius:4px;cursor:pointer;transition:.1s}
+.tab.on{background:var(--bg2);color:var(--tx);box-shadow:0 1px 4px rgba(0,0,0,.25)}
+
+/* Landing */
+.land-hero{text-align:center;padding:72px 20px 52px;max-width:620px;margin:0 auto}
+.land-eyebrow{display:inline-flex;align-items:center;gap:7px;padding:4px 13px;background:var(--accd2);border:1px solid var(--accd);border-radius:20px;font-size:11px;font-weight:600;color:var(--acc);margin-bottom:24px}
+.land-eyebrow svg{width:12px;height:12px}
+.land-h1{font-size:44px;font-weight:800;line-height:1.08;letter-spacing:-2px;margin-bottom:16px}
+.land-h1 em{color:var(--acc);font-style:normal}
+.land-p{color:var(--tx2);font-size:15px;line-height:1.75;margin-bottom:32px}
+.land-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.land-btns .btn{padding:10px 22px;font-size:14px}
+.land-feats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:860px;margin:52px auto 0;padding:0 20px}
+.feat{background:var(--bg2);border:1px solid var(--b);border-radius:8px;padding:18px;transition:border-color .15s}
+.feat:hover{border-color:var(--acc)}
+.feat-icon{width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.feat-icon svg{width:15px;height:15px}
+.feat h3{font-size:13px;font-weight:700;margin-bottom:5px}
+.feat p{font-size:12px;color:var(--tx2);line-height:1.6}
+
+/* Dashboard */
+.dash-layout{display:flex;gap:20px;align-items:flex-start}
+.dash-side{width:240px;flex-shrink:0}
+.dash-main{flex:1;min-width:0}
+.profile-mini-av{width:60px;height:60px;border-radius:50%;font-size:22px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-bottom:10px}
+.profile-mini-name{font-size:15px;font-weight:700;margin-bottom:2px}
+.profile-mini-user{font-size:12px;color:var(--tx2);font-family:'JetBrains Mono',monospace;margin-bottom:8px}
+.profile-mini-bio{font-size:12px;color:var(--tx2);line-height:1.5;margin-bottom:12px}
+.side-nav-item{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:6px;font-size:13px;color:var(--tx2);cursor:pointer;transition:.1s}
+.side-nav-item:hover{background:var(--bg3);color:var(--tx)}
+.side-nav-item svg{width:14px;height:14px}
+.filter-bar{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.filter-bar input{flex:1;min-width:140px;max-width:240px;height:32px;font-size:12px}
+.filter-bar select{width:auto;height:32px;font-size:12px;padding:0 8px}
+
+/* Repo Card */
+.repo-card{background:var(--bg2);border:1px solid var(--b);border-radius:8px;padding:16px 18px;cursor:pointer;transition:border-color .15s}
+.repo-card:hover{border-color:var(--acc)}
+.repo-card+.repo-card{margin-top:10px}
+.rc-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
+.rc-name{font-size:14px;font-weight:700;color:var(--acc);display:flex;align-items:center;gap:7px}
+.rc-name svg{width:14px;height:14px;color:var(--tx3)}
+.rc-vis{font-size:11px;font-weight:600;padding:2px 7px;border-radius:10px;border:1px solid}
+.rc-vis.pub{color:var(--acc);border-color:var(--accd);background:var(--accd2)}
+.rc-vis.prv{color:var(--tx3);border-color:var(--b2);background:var(--bg4)}
+.rc-desc{font-size:12px;color:var(--tx2);line-height:1.5;margin-bottom:10px}
+.rc-meta{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.rc-mi{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--tx3)}
+.rc-mi svg{width:12px;height:12px}
+.lang-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.topics{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
+.topic{font-size:11px;padding:2px 8px;border-radius:10px;background:var(--accd2);color:var(--acc);border:1px solid var(--accd)}
+
+/* Repo View */
+.repo-hd{background:var(--bg2);border-bottom:1px solid var(--b);padding:14px 20px}
+.breadcrumb{display:flex;align-items:center;gap:7px;font-size:14px;margin-bottom:10px}
+.breadcrumb svg{width:12px;height:12px;color:var(--tx3)}
+.repo-hd-acts{display:flex;gap:7px;flex-wrap:wrap}
+.repo-body{display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap}
+.repo-main{flex:1;min-width:0}
+.repo-side{width:220px;flex-shrink:0}
+.files-box{background:var(--bg2);border:1px solid var(--b);border-radius:8px;overflow:hidden;margin-bottom:16px}
+.files-hd{background:var(--bg3);padding:10px 14px;border-bottom:1px solid var(--b);display:flex;align-items:center;justify-content:space-between}
+.files-hd-info{font-size:12px;color:var(--tx2);display:flex;align-items:center;gap:7px}
+.file-row{display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid var(--b);cursor:pointer;transition:.1s}
+.file-row:last-child{border-bottom:none}
+.file-row:hover{background:var(--bg3)}
+.file-row-icon{width:14px;height:14px;color:var(--tx3);flex-shrink:0}
+.file-row-name{flex:1;font-size:13px;font-weight:500;color:var(--acc)}
+.file-row-acts{display:flex;gap:4px;opacity:0;transition:.1s}
+.file-row:hover .file-row-acts{opacity:1}
+.file-row-size{font-size:11px;color:var(--tx3);white-space:nowrap}
+.empty-files{padding:36px;text-align:center;color:var(--tx3)}
+.empty-files svg{width:32px;height:32px;margin:0 auto 10px;color:var(--b2)}
+.readme-box{background:var(--bg2);border:1px solid var(--b);border-radius:8px;overflow:hidden;margin-bottom:16px}
+.readme-hd{background:var(--bg3);padding:10px 14px;border-bottom:1px solid var(--b);font-size:12px;font-weight:600;display:flex;align-items:center;gap:7px;color:var(--tx2)}
+.readme-hd svg{width:13px;height:13px}
+.readme-body{padding:18px 20px;font-size:13px;color:var(--tx2);line-height:1.8;white-space:pre-wrap;word-break:break-word}
+.aside-box{background:var(--bg2);border:1px solid var(--b);border-radius:8px;padding:14px;margin-bottom:12px}
+.aside-box h4{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--tx3);margin-bottom:10px}
+.aside-row{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--tx2);margin-bottom:7px}
+.aside-row svg{width:13px;height:13px;color:var(--tx3);flex-shrink:0}
+
+/* Lang bar */
+.lang-track{height:7px;border-radius:4px;overflow:hidden;display:flex;margin-bottom:8px}
+.lang-seg{height:100%}
+.lang-legend{display:flex;flex-direction:column;gap:5px}
+.lang-li{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--tx2)}
+
+/* File view */
+.code-box{background:var(--bg2);border:1px solid var(--b);border-radius:8px;overflow:hidden}
+.code-hd{background:var(--bg3);padding:9px 14px;border-bottom:1px solid var(--b);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.code-meta{display:flex;align-items:center;gap:10px;font-size:11px;color:var(--tx3)}
+.lang-badge{padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;font-family:'JetBrains Mono',monospace}
+.code-body{overflow-x:auto}
+.code-table{width:100%;border-collapse:collapse}
+.code-table tr:hover{background:var(--bg3)}
+.code-ln{width:1px;padding:0 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--tx3);user-select:none;white-space:nowrap;border-right:1px solid var(--b)}
+.code-lc{padding:0 18px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.65;white-space:pre;color:var(--tx)}
+
+/* Profile */
+.profile-layout{display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap}
+.profile-left{width:260px;flex-shrink:0}
+.profile-right{flex:1;min-width:0}
+.profile-av{width:88px;height:88px;border-radius:50%;font-size:32px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+.profile-name{font-size:22px;font-weight:800;letter-spacing:-.5px;margin-bottom:2px}
+.profile-handle{font-size:13px;color:var(--tx2);font-family:'JetBrains Mono',monospace;margin-bottom:12px}
+.profile-bio{font-size:13px;color:var(--tx2);line-height:1.6;margin-bottom:14px}
+.profile-info{display:flex;flex-direction:column;gap:7px;font-size:12px;color:var(--tx2);margin-bottom:14px}
+.profile-info-row{display:flex;align-items:center;gap:7px}
+.profile-info-row svg{width:13px;height:13px;color:var(--tx3);flex-shrink:0}
+
+/* Explore */
+.explore-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+
+/* New Repo */
+.vis-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.vis-card{padding:14px;border:2px solid var(--b);border-radius:8px;cursor:pointer;transition:.15s}
+.vis-card:hover{border-color:var(--b2)}
+.vis-card.on{border-color:var(--acc);background:var(--accd2)}
+.vis-card-icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;margin-bottom:8px}
+.vis-card-icon svg{width:13px;height:13px}
+.vis-card h4{font-size:12px;font-weight:700;margin-bottom:2px}
+.vis-card p{font-size:11px;color:var(--tx3);line-height:1.5}
+
+/* Settings */
+.settings-layout{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap}
+.settings-nav{width:190px;flex-shrink:0}
+.settings-body{flex:1;min-width:0}
+.s-nav-item{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:6px;font-size:13px;color:var(--tx2);cursor:pointer;transition:.1s}
+.s-nav-item:hover{background:var(--bg3);color:var(--tx)}
+.s-nav-item.on{background:var(--accd);color:var(--acc);font-weight:600}
+.s-nav-item svg{width:14px;height:14px}
+.danger-box{border:1px solid rgba(248,81,73,.3);border-radius:8px;padding:18px}
+.danger-box h3{color:var(--red);font-size:15px;margin-bottom:4px}
+
+/* Modal */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;z-index:400;backdrop-filter:blur(4px);animation:fadeIn .12s}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{background:var(--bg2);border:1px solid var(--b);border-radius:12px;padding:24px;width:calc(100% - 28px);max-width:500px;max-height:90vh;overflow-y:auto;animation:mIn .18s ease}
+@keyframes mIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+.modal-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.modal-hd h3{font-size:16px;font-weight:700}
+.modal-close{width:26px;height:26px;border-radius:5px;background:var(--bg4);border:1px solid var(--b);color:var(--tx2);display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;line-height:1}
+.modal-close:hover{background:var(--redd);color:var(--red)}
+.upload-zone{border:2px dashed var(--b2);border-radius:8px;padding:32px 20px;text-align:center;cursor:pointer;transition:.15s}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--acc);background:var(--accd2)}
+.upload-zone svg{width:36px;height:36px;margin:0 auto 10px;color:var(--tx3)}
+.upload-zone h4{font-size:13px;font-weight:600;margin-bottom:3px}
+.upload-zone p{font-size:11px;color:var(--tx3)}
+.pending-item{display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--bg3);border-radius:5px;margin-bottom:5px}
+.pending-item svg{width:13px;height:13px;color:var(--tx3);flex-shrink:0}
+.pending-item-name{flex:1;font-size:12px;font-family:'JetBrains Mono',monospace}
+
+/* Empty state */
+.empty{text-align:center;padding:52px 20px}
+.empty svg{width:40px;height:40px;margin:0 auto 14px;color:var(--b2)}
+.empty h3{font-size:17px;font-weight:700;margin-bottom:6px}
+.empty p{font-size:13px;color:var(--tx2);margin-bottom:18px}
+
+/* Toast */
+.toast-wrap{position:fixed;bottom:20px;right:20px;z-index:999;display:flex;flex-direction:column;gap:7px}
+.toast{padding:10px 16px;border-radius:7px;font-size:13px;font-weight:500;max-width:320px;display:flex;align-items:center;gap:9px;box-shadow:var(--sha);animation:tIn .2s ease}
+@keyframes tIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
+.toast svg{width:15px;height:15px;flex-shrink:0}
+.t-ok{background:var(--bg2);color:var(--acc);border:1px solid rgba(63,185,80,.3)}
+.t-err{background:var(--bg2);color:var(--red);border:1px solid rgba(248,81,73,.3)}
+.t-info{background:var(--bg2);color:var(--blu);border:1px solid rgba(88,166,255,.3)}
+
+/* Misc */
+.spin{display:inline-block;width:15px;height:15px;border:2px solid var(--b2);border-top-color:var(--acc);border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-full{padding:60px;text-align:center}
+.loading-full .spin{width:26px;height:26px;border-width:3px}
+.sep{height:1px;background:var(--b);margin:4px 0}
+
+@media(max-width:720px){
+  .land-h1{font-size:30px}.land-feats{grid-template-columns:1fr}
+  .dash-layout,.repo-body,.profile-layout,.settings-layout{flex-direction:column}
+  .dash-side,.repo-side,.profile-left,.settings-nav{width:100%}
+  .page{padding:18px 14px}
+}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <a class="nav-logo" href="#" onclick="go('land');return false">
+    <div class="nav-logo-icon"><svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+    <span class="nav-logo-text">GG<em>Ind</em></span>
+  </a>
+  <div class="nav-search">
+    <svg class="nav-search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" id="nav-q" placeholder="Cari repo, user..." onkeydown="if(event.key==='Enter')goSearch()">
+  </div>
+  <div class="nav-sp"></div>
+  <div class="nav-actions" id="nav-acts"></div>
+</nav>
+
+<!-- SETUP -->
+<div id="v-setup" class="hidden">
+  <div class="setup-box">
+    <div class="setup-logo">
+      <div class="setup-logo-icon"><svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+      <h2>Setup GGInd</h2>
+    </div>
+    <p class="sub">Konfigurasi backend sekali, tersimpan di browser kamu — <strong>tidak ada di source code</strong>.</p>
+    <div class="setup-step"><div class="setup-step-n">1</div><div>Buat akun gratis di <a href="https://upstash.com" target="_blank">upstash.com</a> → buat database Redis</div></div>
+    <div class="setup-step"><div class="setup-step-n">2</div><div>Copy <strong>REST URL</strong> dan <strong>REST Token</strong> dari tab "REST API"</div></div>
+    <div class="setup-step"><div class="setup-step-n">3</div><div>Paste di bawah. Data disimpan hanya di localStorage browser ini</div></div>
+    <div style="margin-top:18px">
+      <div class="fg"><label>Upstash REST URL</label><input type="text" id="su-url" placeholder="https://xxx.upstash.io"></div>
+      <div class="fg"><label>Upstash REST Token</label><input type="password" id="su-tok" placeholder="Token rahasia kamu..."><span class="hint">Tidak akan muncul di source code aplikasi</span></div>
+      <button class="btn btn-pri" style="width:100%;justify-content:center;margin-top:4px" onclick="saveSetup()">Simpan & Mulai</button>
+    </div>
+  </div>
+</div>
+
+<!-- LANDING -->
+<div id="v-land" class="hidden">
+  <div class="land-hero">
+    <div class="land-eyebrow"><svg viewBox="0 0 24 24"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg> Platform Cloud Developer Indonesia</div>
+    <h1 class="land-h1">Tempat kode kamu<br><em>tumbuh bersama</em></h1>
+    <p class="land-p">Buat repository, upload project, fork karya orang lain.<br>Gratis untuk semua developer. Tidak perlu install apapun.</p>
+    <div class="land-btns">
+      <button class="btn btn-pri" onclick="go('auth',{t:'reg'})"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>Daftar Gratis</button>
+      <button class="btn btn-sec" onclick="go('explore')"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>Explore Proyek</button>
+    </div>
+  </div>
+  <div class="land-feats">
+    <div class="feat"><div class="feat-icon" style="background:var(--accd)"><svg viewBox="0 0 24 24" style="stroke:var(--acc)"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div><h3>Repository</h3><p>Kelola semua file project kamu dalam satu tempat yang rapi.</p></div>
+    <div class="feat"><div class="feat-icon" style="background:var(--blud)"><svg viewBox="0 0 24 24" style="stroke:var(--blu)"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div><h3>Syntax Highlight</h3><p>Baca kode lebih nyaman dengan warna otomatis untuk 30+ bahasa.</p></div>
+    <div class="feat"><div class="feat-icon" style="background:rgba(188,140,255,.12)"><svg viewBox="0 0 24 24" style="stroke:#bc8cff"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="18" r="3"/><path d="M6 9v6M15.4 7A5 5 0 0 1 18 11.4v.6"/></svg></div><h3>Fork & Kolaborasi</h3><p>Fork repo orang lain dan kembangkan sesuai kebutuhanmu.</p></div>
+    <div class="feat"><div class="feat-icon" style="background:var(--yeld)"><svg viewBox="0 0 24 24" style="stroke:var(--yel)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><h3>Star & Trending</h3><p>Tandai repo favorit dan temukan proyek terpopuler di Explore.</p></div>
+    <div class="feat"><div class="feat-icon" style="background:var(--redd)"><svg viewBox="0 0 24 24" style="stroke:var(--red)"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><h3>Public & Private</h3><p>Kontrol penuh — pilih repo publik untuk sharing atau private.</p></div>
+    <div class="feat"><div class="feat-icon" style="background:var(--accd)"><svg viewBox="0 0 24 24" style="stroke:var(--acc)"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div><h3>Upload Mudah</h3><p>Drag & drop langsung dari browser. Semua tipe file didukung.</p></div>
+  </div>
+</div>
+
+<!-- AUTH -->
+<div id="v-auth" class="hidden">
+  <div class="auth-box">
+    <div class="auth-hd">
+      <div class="logo-wrap"><svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+      <h2>GGInd Cloud</h2><p>Platform repository developer Indonesia</p>
+    </div>
+    <div class="tabs">
+      <div class="tab on" id="at-li" onclick="switchTab('li')">Masuk</div>
+      <div class="tab" id="at-rg" onclick="switchTab('rg')">Daftar</div>
+    </div>
+    <div id="p-li">
+      <div class="fg"><label>Username</label><input type="text" id="li-u" placeholder="username kamu" autocomplete="username" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <div class="fg"><label>Password</label><input type="password" id="li-p" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <button class="btn btn-pri" id="btn-li" style="width:100%;justify-content:center" onclick="doLogin()">Masuk</button>
+    </div>
+    <div id="p-rg" class="hidden">
+      <div class="fg"><label>Username<span class="hint">3–20 karakter: a-z, 0-9, _</span></label><input type="text" id="rg-u" placeholder="dev_keren" oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9_]/g,'')"></div>
+      <div class="fg"><label>Nama Tampilan</label><input type="text" id="rg-n" placeholder="Nama Kamu"></div>
+      <div class="fg"><label>Email</label><input type="email" id="rg-e" placeholder="kamu@email.com"></div>
+      <div class="fg"><label>Password<span class="hint">min 6 karakter</span></label><input type="password" id="rg-p" placeholder="••••••••"></div>
+      <button class="btn btn-pri" id="btn-rg" style="width:100%;justify-content:center" onclick="doRegister()">Buat Akun</button>
+    </div>
+    <p style="text-align:center;font-size:11px;color:var(--tx3);margin-top:18px">GGInd Cloud — Dibuat untuk developer Indonesia</p>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="v-dash" class="hidden">
+  <div class="page">
+    <div class="dash-layout">
+      <div class="dash-side">
+        <div id="pm-box" style="padding-bottom:16px;margin-bottom:12px;border-bottom:1px solid var(--b)"></div>
+        <div class="card" style="padding:8px">
+          <div class="side-nav-item" onclick="go('dash')"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Dashboard</div>
+          <div class="side-nav-item" onclick="go('explore')"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>Explore</div>
+          <div class="side-nav-item" onclick="go('settings')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Pengaturan</div>
+        </div>
+      </div>
+      <div class="dash-main">
+        <div class="page-hd"><div><h1>Repositori</h1><p>Semua project kamu</p></div><button class="btn btn-pri" onclick="go('new-repo')"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Repo Baru</button></div>
+        <div class="filter-bar">
+          <input type="text" id="dash-q" placeholder="Cari repository..." oninput="filterDash()" style="max-width:220px">
+          <select id="dash-sort" onchange="filterDash()"><option value="updated">Terbaru diupdate</option><option value="name">A-Z</option><option value="stars">Paling populer</option></select>
+          <select id="dash-vis" onchange="filterDash()"><option value="all">Semua</option><option value="public">Publik</option><option value="private">Private</option></select>
+        </div>
+        <div id="dash-repos"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NEW REPO -->
+<div id="v-new-repo" class="hidden">
+  <div class="page">
+    <div class="page-hd"><div><h1>Repository Baru</h1><p>Buat repository untuk menyimpan project kamu</p></div></div>
+    <div class="card" style="max-width:600px">
+      <div class="fg"><label>Nama Repository *<span class="hint">Huruf kecil, angka, -, _</span></label><input type="text" id="nr-name" placeholder="nama-project" oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9_-]/g,'')"></div>
+      <div class="fg"><label>Deskripsi</label><input type="text" id="nr-desc" placeholder="Deskripsi singkat..."></div>
+      <div class="fg"><label>Topik <span style="color:var(--tx3);font-size:11px">(pisah koma)</span></label><input type="text" id="nr-topics" placeholder="web, javascript, tools"></div>
+      <div class="fg">
+        <label>Visibilitas</label>
+        <div class="vis-cards">
+          <div class="vis-card on" id="vc-pub" onclick="setVis('public')"><div class="vis-card-icon" style="background:var(--accd2)"><svg viewBox="0 0 24 24" style="stroke:var(--acc)"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div><h4>Publik</h4><p>Semua orang bisa lihat</p></div>
+          <div class="vis-card" id="vc-prv" onclick="setVis('private')"><div class="vis-card-icon" style="background:var(--bg4)"><svg viewBox="0 0 24 24" style="stroke:var(--tx2)"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><h4>Private</h4><p>Hanya kamu yang bisa lihat</p></div>
+        </div>
+      </div>
+      <div style="height:1px;background:var(--b);margin:14px 0"></div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-pri" onclick="createRepo()">Buat Repository</button>
+        <button class="btn btn-sec" onclick="go('dash')">Batal</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- REPO VIEW -->
+<div id="v-repo" class="hidden"><div id="repo-ct"></div></div>
+<!-- FILE VIEW -->
+<div id="v-file" class="hidden"><div id="file-ct"></div></div>
+<!-- EXPLORE -->
+<div id="v-explore" class="hidden">
+  <div class="page">
+    <div class="page-hd"><div><h1>Explore</h1><p>Temukan project menarik dari developer Indonesia</p></div></div>
+    <div class="filter-bar" style="margin-bottom:18px">
+      <input type="text" id="exp-q" placeholder="Cari..." oninput="filterExp()" style="max-width:260px">
+      <select id="exp-lang" onchange="filterExp()"><option value="">Semua Bahasa</option></select>
+      <select id="exp-sort" onchange="filterExp()"><option value="updated">Terbaru</option><option value="stars">Paling Populer</option><option value="forks">Paling Banyak Fork</option></select>
+    </div>
+    <div id="exp-list"></div>
+  </div>
+</div>
+<!-- PROFILE -->
+<div id="v-profile" class="hidden"><div id="profile-ct"></div></div>
+<!-- SETTINGS -->
+<div id="v-settings" class="hidden">
+  <div class="page">
+    <div class="page-hd"><div><h1>Pengaturan</h1><p>Kelola akun kamu</p></div></div>
+    <div class="settings-layout">
+      <div class="settings-nav card" style="padding:8px">
+        <div class="s-nav-item on" id="sn-profile" onclick="showSPane('profile')"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profil</div>
+        <div class="s-nav-item" id="sn-pass" onclick="showSPane('pass')"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Password</div>
+        <div class="s-nav-item" id="sn-backend" onclick="showSPane('backend')"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>Backend</div>
+        <div class="s-nav-item" id="sn-danger" onclick="showSPane('danger')"><svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Danger Zone</div>
+      </div>
+      <div class="settings-body">
+        <div id="sp-profile">
+          <div class="card" style="margin-bottom:16px"><h3 style="font-size:15px;font-weight:700;margin-bottom:4px">Informasi Profil</h3><p style="font-size:12px;color:var(--tx2);margin-bottom:16px">Ditampilkan di profil publik kamu.</p>
+            <div class="fg"><label>Nama Tampilan</label><input type="text" id="s-name"></div>
+            <div class="fg"><label>Bio</label><textarea id="s-bio" style="min-height:72px;font-size:13px"></textarea></div>
+            <div class="fg"><label>Website</label><input type="text" id="s-web" placeholder="https://"></div>
+            <div class="fg"><label>Lokasi</label><input type="text" id="s-loc" placeholder="Jakarta, Indonesia"></div>
+            <button class="btn btn-pri" onclick="saveProfile()">Simpan</button>
+          </div>
+        </div>
+        <div id="sp-pass" class="hidden">
+          <div class="card"><h3 style="font-size:15px;font-weight:700;margin-bottom:4px">Ubah Password</h3><p style="font-size:12px;color:var(--tx2);margin-bottom:16px">Gunakan password yang kuat dan unik.</p>
+            <div class="fg"><label>Password Lama</label><input type="password" id="s-old"></div>
+            <div class="fg"><label>Password Baru</label><input type="password" id="s-new"></div>
+            <div class="fg"><label>Konfirmasi</label><input type="password" id="s-conf"></div>
+            <button class="btn btn-pri" onclick="changePass()">Update Password</button>
+          </div>
+        </div>
+        <div id="sp-backend" class="hidden">
+          <div class="card"><h3 style="font-size:15px;font-weight:700;margin-bottom:4px">Konfigurasi Backend</h3><p style="font-size:12px;color:var(--tx2);margin-bottom:16px">Update kredensial Upstash. Disimpan di localStorage browser.</p>
+            <div class="fg"><label>Upstash REST URL</label><input type="text" id="s-url"></div>
+            <div class="fg"><label>Upstash REST Token</label><input type="password" id="s-tok"></div>
+            <button class="btn btn-pri" onclick="updateBackend()">Simpan Backend</button>
+          </div>
+        </div>
+        <div id="sp-danger" class="hidden">
+          <div class="danger-box"><h3>Danger Zone</h3><p style="font-size:12px;color:var(--tx2);margin:8px 0 16px">Tindakan berikut tidak bisa dibatalkan.</p>
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+              <div><div style="font-size:13px;font-weight:600">Hapus semua repository</div><div style="font-size:11px;color:var(--tx3)">Semua data repo akan hilang permanen</div></div>
+              <button class="btn btn-danger btn-sm" onclick="deleteAllRepos()">Hapus Semua Repo</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL UPLOAD -->
+<div id="m-upload" class="modal-bg hidden">
+  <div class="modal">
+    <div class="modal-hd"><h3>Tambah File</h3><button class="modal-close" onclick="closeM('m-upload')">✕</button></div>
+    <div class="tabs" style="margin-bottom:16px">
+      <div class="tab on" id="ut-file" onclick="switchUpTab('file')">Upload File</div>
+      <div class="tab" id="ut-edit" onclick="switchUpTab('edit')">Buat File Baru</div>
+    </div>
+    <div id="up-file">
+      <div class="upload-zone" id="drop-zone" onclick="document.getElementById('fi-inp').click()" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event)">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <h4>Drag & drop file di sini</h4><p>atau klik untuk memilih file</p>
+      </div>
+      <input type="file" id="fi-inp" class="hidden" multiple onchange="handleFiles(event)">
+      <div id="pend-list" style="margin-top:10px"></div>
+      <button class="btn btn-pri" style="width:100%;justify-content:center;margin-top:10px" onclick="uploadFiles()"><svg viewBox="0 0 24 24"><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Upload</button>
+    </div>
+    <div id="up-edit" class="hidden">
+      <div class="fg"><label>Nama File</label><input type="text" id="ef-name" class="mono" placeholder="index.html"></div>
+      <div class="fg"><label>Isi File</label><textarea id="ef-content" class="mono" style="min-height:200px;font-size:12px"></textarea></div>
+      <button class="btn btn-pri" style="width:100%;justify-content:center" onclick="saveEditorFile()">Simpan File</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EDIT FILE -->
+<div id="m-edit" class="modal-bg hidden">
+  <div class="modal" style="max-width:660px">
+    <div class="modal-hd"><h3 id="edit-title">Edit File</h3><button class="modal-close" onclick="closeM('m-edit')">✕</button></div>
+    <div class="fg"><textarea id="edit-content" class="mono" style="min-height:300px;font-size:12px"></textarea></div>
+    <div style="display:flex;gap:8px"><button class="btn btn-pri" onclick="saveEdit()">Simpan</button><button class="btn btn-sec" onclick="closeM('m-edit')">Batal</button></div>
+  </div>
+</div>
+
+<!-- MODAL CONFIRM -->
+<div id="m-confirm" class="modal-bg hidden">
+  <div class="modal" style="max-width:400px">
+    <div class="modal-hd"><h3 id="mc-title">Konfirmasi</h3><button class="modal-close" onclick="closeM('m-confirm')">✕</button></div>
+    <p id="mc-body" style="font-size:13px;color:var(--tx2);line-height:1.65;margin-bottom:18px"></p>
+    <div style="display:flex;gap:8px"><button class="btn btn-danger" onclick="runConfirm()">Konfirmasi</button><button class="btn btn-sec" onclick="closeM('m-confirm')">Batal</button></div>
+  </div>
+</div>
+
+<div id="toast-wrap" class="toast-wrap"></div>
+
+<script>
+// ══════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════
+const SESS_KEY='ggind_sess', CFG_KEY='ggind_cfg';
+let $S = JSON.parse(localStorage.getItem(SESS_KEY)||'null'); // session user
+let $C = JSON.parse(localStorage.getItem(CFG_KEY)||'null');  // upstash config
+let $confirmCb=null, $uploadCtx={o:'',r:''}, $editCtx={o:'',r:'',f:''};
+let $pending=[], $allDash=[], $allExp=[], $visChoice='public';
+
+// ══════════════════════════════════════════════
+//  UPSTASH
+// ══════════════════════════════════════════════
+async function db(cmd,...args){
+  if(!$C) throw new Error('Belum dikonfigurasi');
+  const res=await fetch($C.url,{method:'POST',headers:{Authorization:'Bearer '+$C.tok,'Content-Type':'application/json'},body:JSON.stringify([cmd,...args])});
+  const d=await res.json();
+  if(d.error) throw new Error(d.error);
+  return d.result;
+}
+
+// ══════════════════════════════════════════════
+//  CRYPTO
+// ══════════════════════════════════════════════
+async function hashPw(pw){
+  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(pw+'ggind_salt_v3'));
+  return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+// ══════════════════════════════════════════════
+//  TOAST
+// ══════════════════════════════════════════════
+const TICONS={ok:'<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>',err:'<svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',info:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>'};
+function toast(msg,type='ok'){
+  const w=document.getElementById('toast-wrap');
+  const t=document.createElement('div');
+  t.className=`toast t-${type}`;
+  t.innerHTML=TICONS[type]+msg;
+  w.appendChild(t);
+  setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity .3s'},2700);
+  setTimeout(()=>t.remove(),3000);
+}
+
+// ══════════════════════════════════════════════
+//  THEME
+// ══════════════════════════════════════════════
+function toggleTheme(){
+  const t=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme',t);
+  localStorage.setItem('ggind_theme',t);
+  renderNav();
+}
+(()=>{const t=localStorage.getItem('ggind_theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
+
+// ══════════════════════════════════════════════
+//  NAV
+// ══════════════════════════════════════════════
+function renderNav(){
+  const dark=document.documentElement.getAttribute('data-theme')==='dark';
+  const themeBtn=`<button class="nav-icon-btn" onclick="toggleTheme()" title="Toggle tema"><svg viewBox="0 0 24 24">${dark?'<circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="7.05" y2="7.05"/><line x1="16.95" y1="16.95" x2="19.78" y2="19.78"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.22" y1="19.78" x2="7.05" y2="16.95"/><line x1="16.95" y1="7.05" x2="19.78" y2="4.22"/></svg>':'<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>'}</button>`;
+  const el=document.getElementById('nav-acts');
+  if(!$S){
+    el.innerHTML=themeBtn+`<button class="btn btn-ghost" style="font-size:13px" onclick="go('explore')"><svg width="13" height="13" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>Explore</button><button class="btn btn-sec btn-sm" onclick="go('auth',{t:'li'})">Masuk</button><button class="btn btn-pri btn-sm" onclick="go('auth',{t:'rg'})">Daftar</button>`;
+  }else{
+    const av=avColor($S.username);
+    el.innerHTML=themeBtn+`<button class="btn btn-pri btn-sm" onclick="go('new-repo')"><svg width="12" height="12" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>New</button>
+    <div class="dd"><div class="nav-av" style="background:${av.bg};color:${av.fg}" onclick="toggleDD()">${$S.username[0].toUpperCase()}</div>
+    <div class="dd-menu hidden" id="dd-main">
+      <div class="dd-head"><strong>${$S.displayName||$S.username}</strong><span>@${$S.username}</span></div>
+      <div class="dd-item" onclick="go('dash');closeDD()"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Dashboard</div>
+      <div class="dd-item" onclick="go('profile',{u:$S.username});closeDD()"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profil Saya</div>
+      <div class="dd-item" onclick="go('settings');closeDD()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Pengaturan</div>
+      <div class="dd-sep"></div>
+      <div class="dd-item danger" onclick="doLogout()"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Keluar</div>
+    </div></div>`;
+  }
+}
+function toggleDD(){document.getElementById('dd-main')?.classList.toggle('hidden')}
+function closeDD(){document.getElementById('dd-main')?.classList.add('hidden')}
+document.addEventListener('click',e=>{if(!e.target.closest('.dd'))closeDD()});
+
+// ══════════════════════════════════════════════
+//  ROUTER
+// ══════════════════════════════════════════════
+const VIEWS=['setup','land','auth','dash','new-repo','repo','file','explore','profile','settings'];
+async function go(v,p={}){
+  VIEWS.forEach(x=>document.getElementById('v-'+x).classList.add('hidden'));
+  document.getElementById('v-'+v).classList.remove('hidden');
+  renderNav(); window.scrollTo(0,0);
+  if(v==='land')return;
+  if(v==='auth'){switchTab(p.t||'li');return;}
+  if(!$C){go('setup');return;}
+  if(v==='dash'){if(!$S)return go('auth');await loadDash();}
+  else if(v==='repo')await loadRepo(p);
+  else if(v==='file')await loadFile(p);
+  else if(v==='explore')await loadExp();
+  else if(v==='profile')await loadProfile(p);
+  else if(v==='settings'){if(!$S)return go('auth');await loadSettings();}
+}
+
+// ══════════════════════════════════════════════
+//  SETUP
+// ══════════════════════════════════════════════
+async function saveSetup(){
+  const url=document.getElementById('su-url').value.trim().replace(/\/$/,'');
+  const tok=document.getElementById('su-tok').value.trim();
+  if(!url||!tok){toast('URL dan token wajib diisi','err');return;}
+  // Test connection
+  try{
+    const res=await fetch(url,{method:'POST',headers:{Authorization:'Bearer '+tok,'Content-Type':'application/json'},body:JSON.stringify(['PING'])});
+    const d=await res.json();
+    if(d.error)throw new Error(d.error);
+  }catch(e){toast('Koneksi gagal: '+e.message,'err');return;}
+  $C={url,tok};
+  localStorage.setItem(CFG_KEY,JSON.stringify($C));
+  toast('Backend tersimpan! Token aman di localStorage.');
+  go($S?'dash':'land');
+}
+
+// ══════════════════════════════════════════════
+//  AUTH
+// ══════════════════════════════════════════════
+function switchTab(t){
+  document.getElementById('p-li').classList.toggle('hidden',t!=='li');
+  document.getElementById('p-rg').classList.toggle('hidden',t!=='rg');
+  document.getElementById('at-li').classList.toggle('on',t==='li');
+  document.getElementById('at-rg').classList.toggle('on',t==='rg');
+}
+async function doLogin(){
+  const u=document.getElementById('li-u').value.trim().toLowerCase();
+  const p=document.getElementById('li-p').value;
+  if(!u||!p){toast('Lengkapi semua field','err');return;}
+  const btn=setLoading('btn-li');
+  try{
+    const raw=await db('GET','u:'+u);
+    if(!raw){toast('Username tidak ditemukan','err');return;}
+    const user=JSON.parse(raw);
+    if(await hashPw(p)!==user.pw){toast('Password salah','err');return;}
+    $S={username:user.username,displayName:user.name};
+    localStorage.setItem(SESS_KEY,JSON.stringify($S));
+    toast('Selamat datang, '+user.name+'!');
+    go('dash');
+  }catch(e){toast(e.message,'err');}
+  finally{resetLoading('btn-li',btn,'Masuk');}
+}
+async function doRegister(){
+  const u=document.getElementById('rg-u').value.trim().toLowerCase();
+  const n=document.getElementById('rg-n').value.trim();
+  const e=document.getElementById('rg-e').value.trim();
+  const p=document.getElementById('rg-p').value;
+  if(!u||!n||!e||!p){toast('Lengkapi semua field','err');return;}
+  if(!/^[a-z0-9_]{3,20}$/.test(u)){toast('Username tidak valid','err');return;}
+  if(p.length<6){toast('Password min 6 karakter','err');return;}
+  const btn=setLoading('btn-rg');
+  try{
+    if(await db('GET','u:'+u)){toast('Username sudah dipakai','err');return;}
+    const user={username:u,name:n,email:e,pw:await hashPw(p),bio:'',web:'',loc:'',created:Date.now()};
+    await db('SET','u:'+u,JSON.stringify(user));
+    await db('INCR','stat:users');
+    $S={username:u,displayName:n};
+    localStorage.setItem(SESS_KEY,JSON.stringify($S));
+    toast('Akun berhasil dibuat! Selamat bergabung');
+    go('dash');
+  }catch(e){toast(e.message,'err');}
+  finally{resetLoading('btn-rg',btn,'Buat Akun');}
+}
+function doLogout(){$S=null;localStorage.removeItem(SESS_KEY);toast('Sampai jumpa!','info');go('land');}
+
+// ══════════════════════════════════════════════
+//  DASHBOARD
+// ══════════════════════════════════════════════
+async function loadDash(){
+  const pm=document.getElementById('pm-box');
+  const rl=document.getElementById('dash-repos');
+  rl.innerHTML=loadingHtml();
+  try{
+    const [rawU,names]=await Promise.all([db('GET','u:'+$S.username),db('SMEMBERS','ur:'+$S.username)]);
+    if(rawU){
+      const u=JSON.parse(rawU);
+      const av=avColor($S.username);
+      pm.innerHTML=`<div class="profile-mini-av" style="background:${av.bg};color:${av.fg}">${$S.username[0].toUpperCase()}</div>
+        <div class="profile-mini-name">${u.name}</div>
+        <div class="profile-mini-user">@${$S.username}</div>
+        <div class="profile-mini-bio">${u.bio||'<em style="color:var(--tx3)">Belum ada bio</em>'}</div>
+        <button class="btn btn-sec btn-sm" style="width:100%;justify-content:center" onclick="go('profile',{u:'${$S.username}'})"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Lihat Profil</button>`;
+    }
+    if(!names||!names.length){$allDash=[];rl.innerHTML=emptyHtml('Belum ada repository','Buat repository pertama kamu dan mulai coding','<button class="btn btn-pri" onclick="go(\'new-repo\')">Buat Repository Pertama</button>');return;}
+    const raws=await Promise.all(names.map(n=>db('GET',`r:${$S.username}:${n}`)));
+    $allDash=raws.filter(Boolean).map(r=>JSON.parse(r)).sort((a,b)=>b.updated-a.updated);
+    renderDash($allDash);
+  }catch(e){rl.innerHTML=emptyHtml('Gagal memuat',e.message);}
+}
+function filterDash(){
+  const q=document.getElementById('dash-q').value.toLowerCase();
+  const sort=document.getElementById('dash-sort').value;
+  const vis=document.getElementById('dash-vis').value;
+  let list=[...$allDash];
+  if(q)list=list.filter(r=>r.name.includes(q)||r.desc?.toLowerCase().includes(q));
+  if(vis!=='all')list=list.filter(r=>vis==='public'?r.pub:!r.pub);
+  if(sort==='name')list.sort((a,b)=>a.name.localeCompare(b.name));
+  else if(sort==='stars')list.sort((a,b)=>(b.stars||0)-(a.stars||0));
+  else list.sort((a,b)=>b.updated-a.updated);
+  renderDash(list);
+}
+function renderDash(repos){
+  const el=document.getElementById('dash-repos');
+  if(!repos.length){el.innerHTML=emptyHtml('Tidak ada hasil','Coba ubah filter');return;}
+  el.innerHTML=repos.map(r=>repoCardHtml(r)).join('');
+}
+
+// ══════════════════════════════════════════════
+//  NEW REPO
+// ══════════════════════════════════════════════
+function setVis(v){
+  $visChoice=v;
+  document.getElementById('vc-pub').classList.toggle('on',v==='public');
+  document.getElementById('vc-prv').classList.toggle('on',v==='private');
+}
+async function createRepo(){
+  if(!$S)return go('auth');
+  const name=document.getElementById('nr-name').value.trim();
+  const desc=document.getElementById('nr-desc').value.trim();
+  const topics=document.getElementById('nr-topics').value.split(',').map(t=>t.trim().toLowerCase()).filter(Boolean);
+  if(!name){toast('Nama repo wajib diisi','err');return;}
+  try{
+    if(await db('GET',`r:${$S.username}:${name}`)){toast('Repo sudah ada','err');return;}
+    const repo={name,desc,owner:$S.username,pub:$visChoice==='public',created:Date.now(),updated:Date.now(),files:[],stars:0,forks:0,starredBy:[],topics};
+    await db('SET',`r:${$S.username}:${name}`,JSON.stringify(repo));
+    await db('SADD','ur:'+$S.username,name);
+    if($visChoice==='public')await db('SADD','pub',`${$S.username}/${name}`);
+    await db('INCR','stat:repos');
+    toast('Repository berhasil dibuat!');
+    go('repo',{o:$S.username,r:name});
+  }catch(e){toast(e.message,'err');}
+}
+
+// ══════════════════════════════════════════════
+//  REPO VIEW
+// ══════════════════════════════════════════════
+async function loadRepo({o,r}){
+  if(!o||!r)return go('dash');
+  const el=document.getElementById('repo-ct');
+  el.innerHTML=loadingHtml(true);
+  try{
+    const raw=await db('GET',`r:${o}:${r}`);
+    if(!raw){el.innerHTML='<div class="page">'+emptyHtml('Repo tidak ditemukan')+'</div>';return;}
+    const repo=JSON.parse(raw);
+    const isOwner=$S&&$S.username===o;
+    const isStarred=$S&&(repo.starredBy||[]).includes($S.username);
+    const langs=calcLangs(repo.files);
+    const readme=repo.files.find(f=>f.name.toLowerCase()==='readme.md');
+    el.innerHTML=`
+    <div class="repo-hd">
+      <div class="breadcrumb">
+        <a href="#" onclick="go('profile',{u:'${o}'})">${o}</a>
+        <svg viewBox="0 0 24 24" style="width:12px;height:12px"><polyline points="9 18 15 12 9 6"/></svg>
+        <strong>${r}</strong>
+        <span class="rc-vis ${repo.pub?'pub':'prv'}" style="margin-left:4px">${repo.pub?'Publik':'Private'}</span>
+      </div>
+      ${repo.desc?`<p style="font-size:13px;color:var(--tx2);margin-bottom:8px">${esc(repo.desc)}</p>`:''}
+      ${repo.topics&&repo.topics.length?`<div class="topics" style="margin-bottom:8px">${repo.topics.map(t=>`<span class="topic">${t}</span>`).join('')}</div>`:''}
+      <div class="repo-hd-acts">
+        ${!isOwner&&$S?`<button class="btn btn-star btn-sm ${isStarred?'on':''}" onclick="toggleStar('${o}','${r}')"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>${isStarred?'Starred':'Star'} <span style="padding:1px 6px;background:var(--bg);border-radius:8px">${repo.stars||0}</span></button>`:''}
+        ${!isOwner&&$S?`<button class="btn btn-sec btn-sm" onclick="forkRepo('${o}','${r}')"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="18" r="3"/><path d="M6 9v6M15.4 7A5 5 0 0 1 18 11.4v.6"/></svg>Fork <span style="padding:1px 6px;background:var(--bg);border-radius:8px">${repo.forks||0}</span></button>`:''}
+        ${isOwner?`<button class="btn btn-sec btn-sm" onclick="openUpload('${o}','${r}')"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Tambah File</button>`:''}
+        <button class="btn btn-sec btn-sm" onclick="copyLink('${o}/${r}')"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>Salin Link</button>
+        ${isOwner?`<button class="btn btn-danger btn-sm" onclick="confirmDel('Hapus Repository','Hapus repo &quot;${r}&quot;? Semua file ikut terhapus dan tidak bisa dikembalikan.',async()=>{await db('DEL','r:${o}:${r}');await db('SREM','ur:${o}','${r}');await db('SREM','pub','${o}/${r}');toast('Repository dihapus');go('dash')})"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>Hapus</button>`:''}
+      </div>
+    </div>
+    <div class="page">
+      <div class="repo-body">
+        <div class="repo-main">
+          <div class="files-box">
+            <div class="files-hd">
+              <span class="files-hd-info"><svg width="13" height="13" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><strong>${repo.files.length}</strong>&nbsp;file · ${ago(repo.updated)}</span>
+              ${isOwner?`<button class="btn btn-sec btn-sm" onclick="openUpload('${o}','${r}')"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Tambah</button>`:''}
+            </div>
+            ${repo.files.length===0?`<div class="empty-files"><svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><p style="font-size:12px">Belum ada file ${isOwner?'— <a href="#" onclick="openUpload(\''+o+'\',\''+r+'\');return false">Upload sekarang</a>':''}</p></div>`
+            :repo.files.map(f=>`<div class="file-row" onclick="go('file',{o:'${o}',r:'${r}',f:'${f.name}'})">
+              <svg class="file-row-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              <span class="file-row-name">${f.name}</span>
+              <span class="file-row-acts">
+                ${isOwner?`<button class="btn btn-ghost btn-sm" style="padding:3px 8px" onclick="event.stopPropagation();openEditFile('${o}','${r}','${f.name}')"><svg width="12" height="12" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>`:''}
+                ${isOwner?`<button class="btn btn-danger btn-sm" style="padding:3px 8px" onclick="event.stopPropagation();confirmDel('Hapus File','Hapus file &quot;${f.name}&quot;?',async()=>{const raw=await db('GET','r:${o}:${r}');if(!raw)return;const rp=JSON.parse(raw);rp.files=rp.files.filter(x=>x.name!=='${f.name}');rp.updated=Date.now();await db('SET','r:${o}:${r}',JSON.stringify(rp));toast('File dihapus');go('repo',{o:'${o}',r:'${r}'})})"><svg width="12" height="12" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg></button>`:''}
+              </span>
+              <span class="file-row-size">${fmtSz(f.content?f.content.length:0)}</span>
+            </div>`).join('')}
+          </div>
+          ${readme?`<div class="readme-box"><div class="readme-hd"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>README.md</div><div class="readme-body">${esc(readme.content)}</div></div>`:''}
+        </div>
+        <div class="repo-side">
+          <div class="aside-box">
+            <h4>Tentang</h4>
+            <p style="font-size:12px;color:var(--tx2);line-height:1.6;margin-bottom:12px">${repo.desc||'Tidak ada deskripsi'}</p>
+            <div class="aside-row"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>${repo.stars||0} bintang</div>
+            <div class="aside-row"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="18" r="3"/><path d="M6 9v6M15.4 7A5 5 0 0 1 18 11.4v.6"/></svg>${repo.forks||0} fork</div>
+            <div class="aside-row"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>${repo.files.length} file</div>
+          </div>
+          ${langs.length?`<div class="aside-box"><h4>Bahasa</h4><div class="lang-track">${langs.map(l=>`<div class="lang-seg" style="width:${l.pct}%;background:${lc(l.name)}"></div>`).join('')}</div><div class="lang-legend">${langs.map(l=>`<div class="lang-li"><span class="lang-dot" style="background:${lc(l.name)}"></span>${l.name}<span style="margin-left:auto;color:var(--tx3)">${l.pct}%</span></div>`).join('')}</div></div>`:''}
+          <div class="aside-box"><h4>Pemilik</h4>
+            <div style="display:flex;align-items:center;gap:9px;cursor:pointer" onclick="go('profile',{u:'${o}'})">
+              <div style="width:30px;height:30px;border-radius:50%;background:${avColor(o).bg};color:${avColor(o).fg};display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px">${o[0].toUpperCase()}</div>
+              <div><div style="font-size:13px;font-weight:600">${o}</div><div style="font-size:11px;color:var(--tx3)">${new Date(repo.created).toLocaleDateString('id-ID')}</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }catch(e){el.innerHTML='<div class="page">'+emptyHtml('Error',e.message)+'</div>';}
+}
+
+// ══════════════════════════════════════════════
+//  FILE VIEW
+// ══════════════════════════════════════════════
+async function loadFile({o,r,f}){
+  const el=document.getElementById('file-ct');
+  el.innerHTML=loadingHtml(true);
+  try{
+    const raw=await db('GET',`r:${o}:${r}`);
+    if(!raw)return;
+    const repo=JSON.parse(raw);
+    const file=repo.files.find(x=>x.name===f);
+    if(!file){el.innerHTML='<div class="page">'+emptyHtml('File tidak ditemukan')+'</div>';return;}
+    const isOwner=$S&&$S.username===o;
+    const lang=getLang(f);
+    const lines=(file.content||'').split('\n');
+    el.innerHTML=`<div class="page">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+        <div class="breadcrumb">
+          <a href="#" onclick="go('profile',{u:'${o}'})">${o}</a>
+          <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+          <a href="#" onclick="go('repo',{o:'${o}',r:'${r}'})">${r}</a>
+          <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+          <span style="color:var(--tx)">${f}</span>
+        </div>
+        <div style="display:flex;gap:7px;flex-wrap:wrap">
+          ${isOwner?`<button class="btn btn-sec btn-sm" onclick="openEditFile('${o}','${r}','${f}')"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit</button>`:''}
+          <button class="btn btn-sec btn-sm" onclick="dlFile('${f}',\`${escJ(file.content)}\`)"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download</button>
+          <button class="btn btn-sec btn-sm" onclick="copyTxt(\`${escJ(file.content)}\`)"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Salin</button>
+          ${isOwner?`<button class="btn btn-danger btn-sm" onclick="confirmDel('Hapus File','Hapus file &quot;${f}&quot;?',async()=>{const raw=await db('GET','r:${o}:${r}');if(!raw)return;const rp=JSON.parse(raw);rp.files=rp.files.filter(x=>x.name!=='${f}');rp.updated=Date.now();await db('SET','r:${o}:${r}',JSON.stringify(rp));toast('File dihapus');go('repo',{o:'${o}',r:'${r}'})})"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>Hapus</button>`:''}
+        </div>
+      </div>
+      <div class="code-box">
+        <div class="code-hd">
+          <div class="code-meta"><span>${lines.length} baris</span><span>${fmtSz(file.content.length)}</span><span>${ago(file.time||0)}</span></div>
+          <span class="lang-badge" style="background:${lc(lang)}22;color:${lc(lang)}">${lang}</span>
+        </div>
+        <div class="code-body"><table class="code-table">${lines.map((l,i)=>`<tr><td class="code-ln">${i+1}</td><td class="code-lc">${esc(l)||' '}</td></tr>`).join('')}</table></div>
+      </div>
+    </div>`;
+  }catch(e){el.innerHTML='<div class="page">'+emptyHtml('Error',e.message)+'</div>';}
+}
+
+// ══════════════════════════════════════════════
+//  PROFILE
+// ══════════════════════════════════════════════
+async function loadProfile({u}){
+  const username=u||($S&&$S.username);
+  if(!username)return go('auth');
+  const el=document.getElementById('profile-ct');
+  el.innerHTML=loadingHtml(true);
+  try{
+    const [rawU,names]=await Promise.all([db('GET','u:'+username),db('SMEMBERS','ur:'+username)]);
+    if(!rawU){el.innerHTML='<div class="page">'+emptyHtml('User tidak ditemukan')+'</div>';return;}
+    const user=JSON.parse(rawU);
+    const isMe=$S&&$S.username===username;
+    let repos=[];
+    if(names&&names.length){
+      const raws=await Promise.all(names.map(n=>db('GET',`r:${username}:${n}`)));
+      repos=raws.filter(Boolean).map(r=>JSON.parse(r)).filter(r=>r.pub||isMe).sort((a,b)=>b.updated-a.updated);
+    }
+    const av=avColor(username);
+    el.innerHTML=`<div class="page">
+      <div class="profile-layout">
+        <div class="profile-left">
+          <div class="profile-av" style="background:${av.bg};color:${av.fg}">${username[0].toUpperCase()}</div>
+          <div class="profile-name">${user.name}</div>
+          <div class="profile-handle">@${username}</div>
+          ${user.bio?`<div class="profile-bio">${esc(user.bio)}</div>`:''}
+          <div class="profile-info">
+            ${user.loc?`<div class="profile-info-row"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${esc(user.loc)}</div>`:''}
+            ${user.web?`<div class="profile-info-row"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg><a href="${esc(user.web)}" target="_blank">${esc(user.web)}</a></div>`:''}
+            <div class="profile-info-row"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Bergabung ${new Date(user.created).toLocaleDateString('id-ID',{year:'numeric',month:'long'})}</div>
+          </div>
+          <p style="font-size:12px;color:var(--tx3)"><strong style="color:var(--tx)">${repos.length}</strong> repositori</p>
+          ${isMe?`<button class="btn btn-sec btn-sm" style="margin-top:12px;width:100%;justify-content:center" onclick="go('settings')"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit Profil</button>`:''}
+        </div>
+        <div class="profile-right">
+          <h2 style="font-size:17px;font-weight:700;margin-bottom:14px">Repositori ${isMe?'':'Publik'}</h2>
+          ${repos.length===0?emptyHtml('Belum ada repositori','',isMe?'<button class="btn btn-pri" onclick="go(\'new-repo\')">Buat Repository</button>':'')
+          :repos.map(r=>repoCardHtml(r)).join('')}
+        </div>
+      </div>
+    </div>`;
+  }catch(e){el.innerHTML='<div class="page">'+emptyHtml('Error',e.message)+'</div>';}
+}
+
+// ══════════════════════════════════════════════
+//  EXPLORE
+// ══════════════════════════════════════════════
+async function loadExp(){
+  const el=document.getElementById('exp-list');
+  el.innerHTML=loadingHtml();
+  try{
+    const keys=await db('SMEMBERS','pub');
+    if(!keys||!keys.length){el.innerHTML=emptyHtml('Belum ada proyek publik','Jadilah yang pertama berbagi proyek kamu!');return;}
+    const raws=await Promise.all(keys.map(k=>{const[o,r]=k.split('/');return db('GET',`r:${o}:${r}`);}));
+    $allExp=raws.filter(Boolean).map(r=>JSON.parse(r)).filter(r=>r.pub).sort((a,b)=>b.updated-a.updated);
+    const langs=[...new Set($allExp.flatMap(r=>r.files.map(f=>getLang(f.name))).filter(l=>l!=='Text'))].sort();
+    const sel=document.getElementById('exp-lang');
+    sel.innerHTML='<option value="">Semua Bahasa</option>'+langs.map(l=>`<option>${l}</option>`).join('');
+    renderExp($allExp);
+  }catch(e){el.innerHTML=emptyHtml('Error',e.message);}
+}
+function filterExp(){
+  const q=document.getElementById('exp-q').value.toLowerCase();
+  const lang=document.getElementById('exp-lang').value;
+  const sort=document.getElementById('exp-sort').value;
+  let list=[...$allExp];
+  if(q)list=list.filter(r=>r.name.includes(q)||r.desc?.toLowerCase().includes(q)||r.owner.includes(q)||r.topics?.some(t=>t.includes(q)));
+  if(lang)list=list.filter(r=>r.files.some(f=>getLang(f.name)===lang));
+  if(sort==='stars')list.sort((a,b)=>(b.stars||0)-(a.stars||0));
+  else if(sort==='forks')list.sort((a,b)=>(b.forks||0)-(a.forks||0));
+  else list.sort((a,b)=>b.updated-a.updated);
+  renderExp(list);
+}
+function renderExp(repos){
+  const el=document.getElementById('exp-list');
+  if(!repos.length){el.innerHTML=emptyHtml('Tidak ada hasil');return;}
+  el.innerHTML=`<div class="explore-grid">${repos.map(r=>repoCardHtml(r)).join('')}</div>`;
+}
+
+// ══════════════════════════════════════════════
+//  STAR & FORK
+// ══════════════════════════════════════════════
+async function toggleStar(o,r){
+  if(!$S)return go('auth');
+  try{
+    const raw=await db('GET',`r:${o}:${r}`);if(!raw)return;
+    const repo=JSON.parse(raw);
+    const i=(repo.starredBy||[]).indexOf($S.username);
+    if(i===-1){repo.starredBy.push($S.username);repo.stars=(repo.stars||0)+1;}
+    else{repo.starredBy.splice(i,1);repo.stars=Math.max(0,(repo.stars||1)-1);}
+    await db('SET',`r:${o}:${r}`,JSON.stringify(repo));
+    loadRepo({o,r});
+  }catch(e){toast(e.message,'err');}
+}
+async function forkRepo(o,r){
+  if(!$S)return go('auth');
+  if($S.username===o){toast('Tidak bisa fork repo sendiri','err');return;}
+  confirmDel('Fork Repository',`Fork "${o}/${r}" ke akun kamu "${$S.username}/${r}"?`,async()=>{
+    try{
+      const raw=await db('GET',`r:${o}:${r}`);if(!raw)return;
+      const orig=JSON.parse(raw);
+      const ex=await db('GET',`r:${$S.username}:${r}`);
+      const newName=ex?r+'-fork':r;
+      const forked={...orig,name:newName,owner:$S.username,pub:true,created:Date.now(),updated:Date.now(),stars:0,forks:0,starredBy:[],forkedFrom:`${o}/${r}`};
+      await db('SET',`r:${$S.username}:${newName}`,JSON.stringify(forked));
+      await db('SADD','ur:'+$S.username,newName);
+      await db('SADD','pub',`${$S.username}/${newName}`);
+      orig.forks=(orig.forks||0)+1;
+      await db('SET',`r:${o}:${r}`,JSON.stringify(orig));
+      await db('INCR','stat:repos');
+      toast(`Berhasil di-fork sebagai "${newName}"!`);
+      go('repo',{o:$S.username,r:newName});
+    }catch(e){toast(e.message,'err');}
+  });
+}
+
+// ══════════════════════════════════════════════
+//  SETTINGS
+// ══════════════════════════════════════════════
+async function loadSettings(){
+  try{
+    const raw=await db('GET','u:'+$S.username);
+    if(raw){
+      const u=JSON.parse(raw);
+      document.getElementById('s-name').value=u.name||'';
+      document.getElementById('s-bio').value=u.bio||'';
+      document.getElementById('s-web').value=u.web||'';
+      document.getElementById('s-loc').value=u.loc||'';
+    }
+    document.getElementById('s-url').value=$C?.url||'';
+    document.getElementById('s-tok').value=''; // jangan tampilkan token
+  }catch{}
+}
+function showSPane(id){
+  ['profile','pass','backend','danger'].forEach(p=>{
+    document.getElementById('sp-'+p).classList.toggle('hidden',p!==id);
+    document.getElementById('sn-'+p).classList.toggle('on',p===id);
+  });
+}
+async function saveProfile(){
+  try{
+    const raw=await db('GET','u:'+$S.username);if(!raw)return;
+    const u=JSON.parse(raw);
+    u.name=document.getElementById('s-name').value.trim()||u.name;
+    u.bio=document.getElementById('s-bio').value.trim();
+    u.web=document.getElementById('s-web').value.trim();
+    u.loc=document.getElementById('s-loc').value.trim();
+    await db('SET','u:'+$S.username,JSON.stringify(u));
+    $S.displayName=u.name;localStorage.setItem(SESS_KEY,JSON.stringify($S));
+    toast('Profil berhasil disimpan!');renderNav();
+  }catch(e){toast(e.message,'err');}
+}
+async function changePass(){
+  const o=document.getElementById('s-old').value,n=document.getElementById('s-new').value,c=document.getElementById('s-conf').value;
+  if(!o||!n||!c){toast('Lengkapi semua field','err');return;}
+  if(n!==c){toast('Konfirmasi password tidak cocok','err');return;}
+  if(n.length<6){toast('Password baru min 6 karakter','err');return;}
+  try{
+    const raw=await db('GET','u:'+$S.username);if(!raw)return;
+    const u=JSON.parse(raw);
+    if(await hashPw(o)!==u.pw){toast('Password lama salah','err');return;}
+    u.pw=await hashPw(n);
+    await db('SET','u:'+$S.username,JSON.stringify(u));
+    toast('Password berhasil diubah!');
+    ['s-old','s-new','s-conf'].forEach(id=>document.getElementById(id).value='');
+  }catch(e){toast(e.message,'err');}
+}
+async function updateBackend(){
+  const url=document.getElementById('s-url').value.trim().replace(/\/$/,'');
+  const tok=document.getElementById('s-tok').value.trim();
+  if(!url||!tok){toast('URL dan token wajib diisi','err');return;}
+  $C={url,tok};localStorage.setItem(CFG_KEY,JSON.stringify($C));
+  toast('Backend diperbarui!');
+  document.getElementById('s-tok').value='';
+}
+async function deleteAllRepos(){
+  confirmDel('Hapus Semua Repository','Semua repository akan dihapus permanen dan tidak bisa dikembalikan.',async()=>{
+    try{
+      const names=await db('SMEMBERS','ur:'+$S.username);
+      if(names&&names.length){
+        await Promise.all(names.map(n=>db('DEL',`r:${$S.username}:${n}`)));
+        await Promise.all(names.map(n=>db('SREM','pub',`${$S.username}/${n}`)));
+        await db('DEL','ur:'+$S.username);
+      }
+      toast('Semua repository dihapus');
+    }catch(e){toast(e.message,'err');}
+  });
+}
+
+// ══════════════════════════════════════════════
+//  UPLOAD MODAL
+// ══════════════════════════════════════════════
+function openUpload(o,r){
+  $uploadCtx={o,r};$pending=[];
+  document.getElementById('pend-list').innerHTML='';
+  document.getElementById('ef-name').value='';
+  document.getElementById('ef-content').value='';
+  switchUpTab('file');
+  document.getElementById('m-upload').classList.remove('hidden');
+}
+function switchUpTab(t){
+  document.getElementById('up-file').classList.toggle('hidden',t!=='file');
+  document.getElementById('up-edit').classList.toggle('hidden',t!=='edit');
+  document.getElementById('ut-file').classList.toggle('on',t==='file');
+  document.getElementById('ut-edit').classList.toggle('on',t==='edit');
+}
+function handleDrop(e){e.preventDefault();document.getElementById('drop-zone').classList.remove('drag');readFiles(e.dataTransfer.files);}
+function handleFiles(e){readFiles(e.target.files);}
+function readFiles(fl){
+  [...fl].forEach(f=>{const r=new FileReader();r.onload=ev=>{$pending.push({name:f.name,content:ev.target.result,size:f.size,time:Date.now()});renderPend();};r.readAsText(f);});
+}
+function renderPend(){
+  document.getElementById('pend-list').innerHTML=$pending.map((f,i)=>`<div class="pending-item"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span class="pending-item-name">${f.name}</span><span style="font-size:11px;color:var(--tx3)">${fmtSz(f.size)}</span><button class="btn btn-ghost btn-sm" style="padding:2px 7px" onclick="$pending.splice(${i},1);renderPend()"><svg viewBox="0 0 24 24" width="11" height="11"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>`).join('');
+}
+async function uploadFiles(){
+  if(!$pending.length){toast('Pilih file dulu','err');return;}
+  try{
+    const raw=await db('GET',`r:${$uploadCtx.o}:${$uploadCtx.r}`);if(!raw)return;
+    const repo=JSON.parse(raw);
+    $pending.forEach(f=>{const i=repo.files.findIndex(x=>x.name===f.name);if(i>=0)repo.files[i]=f;else repo.files.push(f);});
+    repo.updated=Date.now();
+    await db('SET',`r:${$uploadCtx.o}:${$uploadCtx.r}`,JSON.stringify(repo));
+    await db('INCRBY','stat:files',$pending.length);
+    toast(`${$pending.length} file berhasil diupload!`);
+    closeM('m-upload');
+    go('repo',{o:$uploadCtx.o,r:$uploadCtx.r});
+  }catch(e){toast(e.message,'err');}
+}
+async function saveEditorFile(){
+  const name=document.getElementById('ef-name').value.trim();
+  const content=document.getElementById('ef-content').value;
+  if(!name){toast('Nama file wajib diisi','err');return;}
+  try{
+    const raw=await db('GET',`r:${$uploadCtx.o}:${$uploadCtx.r}`);if(!raw)return;
+    const repo=JSON.parse(raw);
+    const i=repo.files.findIndex(x=>x.name===name);
+    const file={name,content,size:content.length,time:Date.now()};
+    if(i>=0)repo.files[i]=file;else{repo.files.push(file);await db('INCR','stat:files');}
+    repo.updated=Date.now();
+    await db('SET',`r:${$uploadCtx.o}:${$uploadCtx.r}`,JSON.stringify(repo));
+    toast('File tersimpan!');closeM('m-upload');
+    go('repo',{o:$uploadCtx.o,r:$uploadCtx.r});
+  }catch(e){toast(e.message,'err');}
+}
+async function openEditFile(o,r,f){
+  $editCtx={o,r,f};
+  document.getElementById('edit-title').textContent='Edit '+f;
+  document.getElementById('edit-content').value='Memuat...';
+  document.getElementById('m-edit').classList.remove('hidden');
+  try{
+    const raw=await db('GET',`r:${o}:${r}`);if(raw){const rp=JSON.parse(raw);const fi=rp.files.find(x=>x.name===f);if(fi)document.getElementById('edit-content').value=fi.content||'';}
+  }catch{}
+}
+async function saveEdit(){
+  const{o,r,f}=$editCtx;
+  const content=document.getElementById('edit-content').value;
+  try{
+    const raw=await db('GET',`r:${o}:${r}`);if(!raw)return;
+    const repo=JSON.parse(raw);
+    const i=repo.files.findIndex(x=>x.name===f);
+    if(i>=0)repo.files[i]={...repo.files[i],content,size:content.length,time:Date.now()};
+    repo.updated=Date.now();
+    await db('SET',`r:${o}:${r}`,JSON.stringify(repo));
+    toast('File berhasil disimpan!');closeM('m-edit');
+    go('repo',{o,r});
+  }catch(e){toast(e.message,'err');}
+}
+
+// ══════════════════════════════════════════════
+//  MODALS & CONFIRM
+// ══════════════════════════════════════════════
+function closeM(id){document.getElementById(id).classList.add('hidden');}
+function confirmDel(title,body,cb){
+  document.getElementById('mc-title').textContent=title;
+  document.getElementById('mc-body').innerHTML=body;
+  $confirmCb=cb;
+  document.getElementById('m-confirm').classList.remove('hidden');
+}
+function runConfirm(){closeM('m-confirm');if($confirmCb){$confirmCb();$confirmCb=null;}}
+
+// ══════════════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════════════
+function goSearch(){const q=document.getElementById('nav-q').value.trim();if(!q)return;go('explore');setTimeout(()=>{document.getElementById('exp-q').value=q;filterExp();},400);}
+
+function repoCardHtml(r){
+  const pl=primLang(r);
+  return `<div class="repo-card" onclick="go('repo',{o:'${r.owner}',r:'${r.name}'})">
+    <div class="rc-top"><div class="rc-name"><svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><span style="color:var(--tx2)">${r.owner}/</span><strong>${r.name}</strong></div><span class="rc-vis ${r.pub?'pub':'prv'}">${r.pub?'Publik':'Private'}</span></div>
+    ${r.desc?`<div class="rc-desc">${esc(r.desc)}</div>`:''}
+    ${r.topics&&r.topics.length?`<div class="topics">${r.topics.slice(0,4).map(t=>`<span class="topic">${t}</span>`).join('')}</div>`:''}
+    <div class="rc-meta">
+      ${pl?`<span class="rc-mi"><span class="lang-dot" style="background:${lc(pl)}"></span>${pl}</span>`:''}
+      <span class="rc-mi"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>${r.stars||0}</span>
+      <span class="rc-mi"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="18" r="3"/><path d="M6 9v6M15.4 7A5 5 0 0 1 18 11.4v.6"/></svg>${r.forks||0}</span>
+      <span class="rc-mi"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${ago(r.updated)}</span>
+    </div>
+  </div>`;
+}
+
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function escJ(s){return(s||'').replace(/\\/g,'\\\\').replace(/`/g,'\\`').replace(/\$/g,'\\$').replace(/\r/g,'');}
+function ago(ts){if(!ts)return'baru saja';const d=Date.now()-ts,m=60000,h=3600000,dy=86400000;if(d<m)return'baru saja';if(d<h)return Math.floor(d/m)+' mnt lalu';if(d<dy)return Math.floor(d/h)+' jam lalu';if(d<30*dy)return Math.floor(d/dy)+' hari lalu';return new Date(ts).toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'});}
+function fmtSz(b){if(b<1024)return b+' B';if(b<1048576)return(b/1024).toFixed(1)+' KB';return(b/1048576).toFixed(1)+' MB';}
+function loadingHtml(full){return full?'<div class="loading-full"><div class="spin"></div></div>':'<div style="text-align:center;padding:40px"><div class="spin" style="width:22px;height:22px;border-width:3px"></div></div>';}
+function emptyHtml(title,sub='',action=''){return`<div class="empty"><svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><h3>${title}</h3>${sub?`<p>${sub}</p>`:''}${action}</div>`;}
+async function copyTxt(t){try{await navigator.clipboard.writeText(t);toast('Disalin!');}catch{toast('Gagal salin','err');}}
+async function copyLink(path){try{await navigator.clipboard.writeText(location.href.split('?')[0]+'?repo='+path);toast('Link disalin!');}catch{toast('Gagal salin','err');}}
+function dlFile(name,content){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content]));a.download=name;a.click();}
+function setLoading(id){const el=document.getElementById(id);const prev=el.innerHTML;el.innerHTML='<div class="spin"></div>';el.disabled=true;return prev;}
+function resetLoading(id,prev,fallback){const el=document.getElementById(id);if(el){el.innerHTML=prev||fallback;el.disabled=false;}}
+
+const LANGS={html:'HTML',css:'CSS',js:'JavaScript',ts:'TypeScript',jsx:'JavaScript',tsx:'TypeScript',json:'JSON',md:'Markdown',py:'Python',lua:'Lua',java:'Java',php:'PHP',sql:'SQL',xml:'XML',sh:'Shell',bash:'Shell',rb:'Ruby',go:'Go',rs:'Rust',c:'C',cpp:'C++',cs:'C#',vue:'Vue',svelte:'Svelte',yml:'YAML',yaml:'YAML',kt:'Kotlin',swift:'Swift',dart:'Dart',txt:'Text'};
+const LCOLORS={HTML:'#e34c26',CSS:'#563d7c',JavaScript:'#f1e05a',TypeScript:'#3178c6',JSON:'#8b949e',Markdown:'#0a7ae9',Python:'#3572a5',Lua:'#000080',Java:'#b07219',PHP:'#4f5d95',SQL:'#e38c00',XML:'#0060ac',Shell:'#89e051',Ruby:'#701516',Go:'#00add8',Rust:'#dea584',C:'#555555',['C++']:'#f34b7d',['C#']:'#178600',Vue:'#41b883',Svelte:'#ff3e00',YAML:'#cb171e',Kotlin:'#7f52ff',Swift:'#ffac45',Dart:'#00b4ab',Text:'#484f58'};
+function getLang(fn){return LANGS[fn.split('.').pop().toLowerCase()]||'Text';}
+function lc(l){return LCOLORS[l]||'#8b949e';}
+function primLang(r){const m={};(r.files||[]).forEach(f=>{const l=getLang(f.name);if(l!=='Text')m[l]=(m[l]||0)+(f.content?f.content.length:1);});return Object.entries(m).sort((a,b)=>b[1]-a[1])[0]?.[0]||null;}
+function calcLangs(files){const m={};let tot=0;(files||[]).forEach(f=>{const l=getLang(f.name);if(l!=='Text'){const s=f.content?f.content.length:1;m[l]=(m[l]||0)+s;tot+=s;}});if(!tot)return[];return Object.entries(m).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([name,s])=>({name,pct:Math.round(s/tot*100)}));}
+
+const AVC=[['#3fb950','#0d1117'],['#58a6ff','#0d1117'],['#bc8cff','#0d1117'],['#e3b341','#0d1117'],['#f85149','#0d1117'],['#2ea043','#fff'],['#1f6feb','#fff'],['#8957e5','#fff'],['#da3633','#fff'],['#bf8700','#0d1117']];
+function avColor(u){const i=u.charCodeAt(0)%AVC.length;return{bg:AVC[i][0],fg:AVC[i][1]};}
+
+// ══════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════
+renderNav();
+if(!$C)go('setup');
+else if($S)go('dash');
+else go('land');
+</script>
+</body>
+</html>
